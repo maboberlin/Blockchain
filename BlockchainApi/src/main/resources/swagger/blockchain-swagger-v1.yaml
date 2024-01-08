@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: Blockchain project
+  description: |-
+    This is an API for the blockchain project
+  termsOfService: http://swagger.io/terms/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+servers:
+  - url: https://localhost:30303/api/v1
+tags:
+  - name: Blockchain
+    description: Blockchain endpoints
+paths:
+  /blockchain:
+    post:
+      tags:
+        - Blockchain
+      summary: Send a mined block
+      description: Send a mined block
+      operationId: postBlock
+      requestBody:
+        description: Send a mined block
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlockDto'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockDto'
+        '400':
+          description: Invalid Block supplied
+        '405':
+          description: Validation exception
+    get:
+      tags:
+        - Blockchain
+      summary: get actual blockchain
+      description: get actual blockchain
+      operationId: getBlockList
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockList'
+        '400':
+          description: Invalid Block supplied
+        '405':
+          description: Validation exception
+  /blockchain/transactions:
+    post:
+      tags:
+        - Blockchain
+      summary: Send a list of transactions
+      description: Send a list of transactions
+      operationId: postTransactions
+      parameters:
+        - in: header
+          name: X-Re-Dispatch
+          schema:
+            type: boolean
+          required: false
+      requestBody:
+        description: Send a list of transactions
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionList'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionList'
+        '400':
+          description: Invalid list of transactions supplied
+        '405':
+          description: Validation exception
+components:
+  schemas:
+    BlockList:
+      type: array
+      items:
+        $ref: '#/components/schemas/BlockDto'
+    BlockDto:
+      type: object
+      properties:
+        hash:
+          type: string
+          minLength: 64
+          maxLength: 64
+          example: 00000c4c3dc5dfa8db26955e9df4c28099ebe66cd0a124ad396c8e44f5e2c04d
+        previousHash:
+          type: string
+          minLength: 64
+          maxLength: 64
+          example: 00000c4c3dc5dfa8db26955e9df4c28099ebe66cd0a124ad396c8e44f5e2c04d
+        depth:
+          type: integer
+          format: int32
+          example: 0
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionDto'
+        timestamp:
+          type: integer
+          format: int64
+          example: 1697891818
+        nonce:
+          type: integer
+          format: int32
+          example: 66781
+        minedBy:
+          type: string
+          minLength: 256
+          maxLength: 256
+          example: node1
+    TransactionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/TransactionDto'
+    TransactionDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        data:
+          type: string
+          example: "any data"
+  securitySchemes:
+    {}

@@ -1,0 +1,36 @@
+version: '3'
+services:
+  discovery-service:
+    image: discovery-service:1.0
+    ports:
+      - "8761:8761"
+  blockchain-service-1:
+    image: blockchain-service:1.0
+    ports:
+      - "30303:30303"
+    environment:
+      - SERVER_PORT=30303
+      - EUREKA_URI=http://discovery-service:8761/eureka
+    depends_on:
+      - discovery-service
+  blockchain-service-2:
+    image: blockchain-service:1.0
+    ports:
+      - "30304:30304"
+    environment:
+      - SERVER_PORT=30304
+      - EUREKA_URI=http://discovery-service:8761/eureka
+    depends_on:
+      - discovery-service
+  blockchain-service-3:
+    image: blockchain-service:1.0
+    ports:
+      - "30305:30305"
+    environment:
+      - SERVER_PORT=30305
+      - EUREKA_URI=http://discovery-service:8761/eureka
+    depends_on:
+      - discovery-service
+networks:
+  docker-net:
+    driver: bridge
